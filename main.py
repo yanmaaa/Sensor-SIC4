@@ -1,6 +1,11 @@
 from mfrc522 import SimpleMFRC522
 import os
 
+import pymongo
+client = pymongo.MongoClient("mongodb+srv://abyanmaula17:abyanmaula17@test.ccme8bl.mongodb.net/?retryWrites=true&w=majority")
+db = client['rack']
+my_collections = db['stock']
+
 reader = SimpleMFRC522()
 inventory = {}
 processed_tags = set()
@@ -57,6 +62,7 @@ try:
                 print(f"{item} tidak tersedia dalam inventaris atau stok habis.")
         else:
             print("Tindakan tidak valid. Silakan coba lagi.")
+            continue  # Kembali ke awal loop
 
         if action.lower() in ["in", "out"]:
             # Menyimpan data ke dalam file .log jika tindakan valid (in atau out)
