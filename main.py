@@ -1,16 +1,16 @@
 from mfrc522 import SimpleMFRC522
 import os
-
 import pymongo
-client = pymongo.MongoClient("mongodb+srv://abyanmaula17:abyanmaula17@test.ccme8bl.mongodb.net/?retryWrites=true&w=majority")
-db = client['rack']
-my_collections = db['stock']
 
 reader = SimpleMFRC522()
 inventory = {}
 processed_tags = set()
 
 # Membaca inventaris dari file log jika ada
+client = pymongo.MongoClient("mongodb+srv://abyan:xXKjtyEjckDl6wkD@adara.u7spbca.mongodb.net/?retryWrites=true&w=majority")
+db = client['SAI']
+my_collections = db['stock']
+
 if os.path.exists("inventory.log"):
     with open("inventory.log", "r") as log_file:
         for line in log_file:
@@ -65,10 +65,20 @@ try:
             continue  # Kembali ke awal loop
 
         if action.lower() in ["in", "out"]:
-            # Menyimpan data ke dalam file .log jika tindakan valid (in atau out)
-            with open("inventory.log", "a") as log_file:
-                log_file.write(f"Tag ID: {id}, Tindakan: {action}, Nama Barang: {item}\n")
-                processed_tags.add(id)  # Tandai tag ini sudah ditambahkan
+            # Menyimpan data ke MongoDB koleksi "stock"
+            data = {
+                "tag_id": id,
+                "action": action,
+                "item": item
+            }
+            my_collections.insert_one(data)
+            processed_tags.add(id)
+
+        # if action.lower() in ["in", "out"]:
+        #     # Menyimpan data ke dalam file .log jika tindakan valid (in atau out)
+        #     with open("inventory.log", "a") as log_file:
+        #         log_file.write(f"Tag ID: {id}, Tindakan: {action}, Nama Barang: {item}\n")
+        #         processed_tags.add(id)  # Tandai tag ini sudah ditambahkan
 
         print("Inventaris saat ini:")
         for item, quantity in inventory.items():

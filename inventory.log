@@ -1,0 +1,1 @@
+collection.update_one({"item": item}, {"$inc": {"quantity": -1}})
