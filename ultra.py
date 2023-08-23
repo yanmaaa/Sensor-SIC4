@@ -1,5 +1,7 @@
 import RPi.GPIO as GPIO
 import time
+import requests
+
 
 # Konfigurasi pin GPIO
 TRIGGER_PIN = 20
@@ -14,7 +16,6 @@ TRIGGER_PIN5 = 3
 ECHO_PIN5 = 4
 TRIGGER_PIN6 = 17
 ECHO_PIN6 = 27
-
 
 # Inisialisasi GPIO
 GPIO.setmode(GPIO.BCM)
@@ -169,16 +170,16 @@ if __name__ == "__main__":
             stock4 = calculate_stock(distance4)
             distance5 = inven5()
             stock5 = calculate_stock(distance5)
-            # distance6 = inven6()
-            # stock6 = calculate_stock(distance6)
+            distance6 = inven6()
+            stock6 = calculate_stock(distance6)
             
             print(f"Ultra 1 - Jarak: {distance1} cm, Stok: {stock1}")
             print(f"Ultra 2 - Jarak: {distance2} cm, Stok: {stock2}")
             print(f"Ultra 3 - Jarak: {distance3} cm, Stok: {stock3}")
             print(f"Ultra 4 - Jarak: {distance4} cm, Stok: {stock4}")
             print(f"Ultra 5 - Jarak: {distance5} cm, Stok: {stock5}")
-            # print(f"Ultra 6 - Jarak: {distance6} cm, Stok: {stock6}")
-            
+            print(f"Ultra 6 - Jarak: {distance6} cm, Stok: {stock6}")
+                    
             time.sleep(3)  # Interval pembacaan
             
     except KeyboardInterrupt:

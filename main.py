@@ -1,10 +1,14 @@
 from mfrc522 import SimpleMFRC522
 import os
 import pymongo
+from datetime import datetime
+from ubidots import ApiClient
 
 reader = SimpleMFRC522()
 inventory = {}
 processed_tags = set()
+now = datetime.now()
+dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
 
 # Membaca inventaris dari file log jika ada
 client = pymongo.MongoClient("mongodb+srv://abyan:xXKjtyEjckDl6wkD@adara.u7spbca.mongodb.net/?retryWrites=true&w=majority")
@@ -51,6 +55,8 @@ try:
             else:
                 inventory[item] = 1
                 print(f"{item} berhasil ditambahkan ke inventaris.")
+                print("Tanggal Masuk =", dt_string)
+
         elif action.lower() == "out":
             item = input("Masukkan nama barang: ")
             if item in inventory and inventory[item] > 0:
@@ -69,16 +75,17 @@ try:
             data = {
                 "tag_id": id,
                 "action": action,
-                "item": item
+                "item": item,
+                "Masuk": dt_string
             }
             my_collections.insert_one(data)
             processed_tags.add(id)
 
-        # if action.lower() in ["in", "out"]:
-        #     # Menyimpan data ke dalam file .log jika tindakan valid (in atau out)
-        #     with open("inventory.log", "a") as log_file:
-        #         log_file.write(f"Tag ID: {id}, Tindakan: {action}, Nama Barang: {item}\n")
-        #         processed_tags.add(id)  # Tandai tag ini sudah ditambahkan
+        if action.lower() in ["in", "out"]:
+            # Menyimpan data ke dalam file .log jika tindakan valid (in atau out)
+            with open("inventory.log", "a") as log_file:
+                log_file.write(f"Tag ID: {id}, Tindakan: {action}, Nama Barang: {item}\n")
+                processed_tags.add(id)  # Tandai tag ini sudah ditambahkan
 
         print("Inventaris saat ini:")
         for item, quantity in inventory.items():

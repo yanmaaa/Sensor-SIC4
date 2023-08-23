@@ -6,9 +6,9 @@ TRIGGER_PIN = 20
 ECHO_PIN = 21
 
 # Inisialisasi GPIO
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(TRIGGER_PIN, GPIO.OUT)
-GPIO.setup(ECHO_PIN, GPIO.IN)
+def init_ultrasonic():
+    GPIO.setup(TRIGGER_PIN, GPIO.OUT)
+    GPIO.setup(ECHO_PIN, GPIO.IN)
 
 def measure_distance():
     GPIO.output(TRIGGER_PIN, GPIO.HIGH)
@@ -41,6 +41,7 @@ def calculate_stock(distance):
 if __name__ == "__main__":
     try:
         while True:
+            init_ultrasonic()
             distance = measure_distance()
             stock = calculate_stock(distance)
             print(f"Jarak: {distance} cm, Stok: {stock}")
